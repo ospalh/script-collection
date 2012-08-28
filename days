@@ -9,7 +9,7 @@ import sys
 import time
 from decimal import Decimal
 
-__version__ = '1.1.0'
+__version__ = '1.1.1'
 
 if sys.platform.startswith("win32"):
     # Chicken out. use ASCII on windows.
