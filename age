@@ -1,19 +1,22 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 ; mode: python -*-
-# © 2010–2 ospalh
+# © Copyright 2010–2 ospalh@gmail.com
 # License: GNU AGPL, version 3 or later; http://www.gnu.org/licenses/agpl.html
 
-import time, os
+import time
+import os
 
-VERSION = '1.0.1'
+VERSION = '1.0.2m'
 
-def print_age(file):
-#    print(int(time.time() - os.stat(file).st_ctime))
-    print(int(time.time() - os.stat(file).st_mtime))
+def age_seconds(file):
+    """Return the age of a file in seconds."""
+    #return int(time.time() - os.stat(file).st_ctime)
+    return time.time() - os.stat(file).st_mtime
 
 
 if __name__ == '__main__':
-    import sys, string
+    import sys
+    import string
 
     helpmsg = """Usage: age FILE [FILE2 ... [FILE_N]]
 Prints the age of FILE in seconds
@@ -22,14 +25,17 @@ Prints the age of FILE in seconds
     if len(sys.argv) < 2:
         print helpmsg
         sys.exit(0)
-        
+
     if len(sys.argv) == 2:
-        print_age(sys.argv[1])
+        try:
+            print(int(age_seconds(sys.argv[1])))
+        except OSError as ose:
+            sys.stderr.write(str(ose) + '\n')
+
 
     if len(sys.argv) > 2:
         for fl in sys.argv[1:]:
-            print (string.ljust(fl + ':' ,20)),
-            print_age(fl)
-                  
-
-
+            try:
+                print(string.ljust(fl + ':' ,20) + str(int(age_seconds(fl))))
+            except OSError as ose:
+                sys.stderr.write(str(ose) + '\n')
