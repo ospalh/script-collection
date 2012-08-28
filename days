@@ -1,0 +1,112 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 ; mode: python -*-
+# © Copyright 2010–2 ospalh@gmail.com
+# License: GNU AGPL, version 3 or later; http://www.gnu.org/licenses/agpl.html
+
+import time
+import os
+import math
+
+__version__ = '1.1.0'
+
+def omag(x):
+    """Return the order of magnitude of a number."""
+    try:
+        return int(math.floor(math.log10(abs(x))))
+    except ValueError:
+        return 0
+
+def age_seconds(file):
+    """Return the age of a file in seconds."""
+    #return int(time.time() - os.stat(file).st_ctime)
+    return time.time() - os.stat(file).st_mtime
+
+def age_days_formated(file, sigfig=3, maybe_years=True):
+    """
+    Return the age of a file in days.
+
+    Returns a string that represents the age of a file in
+    days. Formated in a specific way that should make parsing
+    the decimal part of the age easier for humans.
+    """
+    days = age_seconds(file)/86400.0
+    # Calculate how many digits to show. Show full precision of days,
+    # limited for shorter times.
+    digits = max(sigfig - omag(days) - 1,0, 0)
+    int_days = int(math.floor(days))
+    remainder_days = days - int_days
+    if remainder_days == 0.0:
+        # avoid printing "2.00 days"
+        digits = 0
+    # Do the formating by hand.
+    # First the days.
+    out_string = str(int_days)
+    # Now do a number of digits by hand.
+    if digits > 0:
+        remainder_days *= 10
+        next_digit = int(math.floor(remainder_days))
+        remainder_days -= next_digit
+        out_string +=  '.' + str(next_digit)
+    if digits > 1:
+        remainder_days *= 10
+        next_digit = int(math.floor(remainder_days))
+        remainder_days -= next_digit
+        out_string += str(next_digit)
+    if digits > 2:
+        # Now we see why we unrolled this:
+        remainder_days *= 10
+        next_digit = int(math.floor(remainder_days))
+        remainder_days -= next_digit
+        # Add a marker that is in no standard.
+        out_string += "’" + str(next_digit)
+    if digits > 3:
+        # Now we see why we unrolled this:
+        remainder_days *= 10
+        next_digit = int(math.floor(remainder_days))
+        remainder_days -= next_digit
+        # Add a marker that is in no standard.
+        out_string += "’" + str(next_digit)
+    if digits > 4:
+        remainder_days *= 10
+        next_digit = int(math.floor(remainder_days))
+        remainder_days -= next_digit
+        out_string += str(next_digit)
+    if digits > 5:
+        # And the rest. This could be done more efficently. But that
+        # would take longer to write.
+        out_string += "’"
+        digits -= 5
+        while digits:
+            remainder_days *= 10
+            next_digit = int(math.floor(remainder_days))
+            remainder_days -= next_digit
+            out_string += str(next_digit)
+            digits -= 1
+    return out_string
+
+
+if __name__ == '__main__':
+    import sys
+    import string
+
+    helpmsg = """Usage: days FILE [FILE2 ... [FILE_N]]
+Prints the age of FILE in days, using a non-standard formating of the days.
+"""
+
+    if len(sys.argv) < 2:
+        print helpmsg
+        sys.exit(0)
+
+    if len(sys.argv) == 2:
+        try:
+            print(age_days_formated(sys.argv[1]))
+        except OSError as ose:
+            sys.stderr.write(str(ose) + '\n')
+
+
+    if len(sys.argv) > 2:
+        for fl in sys.argv[1:]:
+            try:
+                print(string.ljust(fl + ':' ,20) + age_days_formated(fl))
+            except OSError as ose:
+                sys.stderr.write(str(ose) + '\n')
