@@ -9,7 +9,7 @@ import sys
 import time
 from decimal import Decimal
 
-__version__ = '1.2.0'
+__version__ = '1.2.1'
 
 year = 365.2421897
 
