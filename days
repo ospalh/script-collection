@@ -26,20 +26,30 @@ def omag(x):
     except ValueError:
         return 0
 
-def age_seconds(file):
+def age_seconds(file_name):
     """Return the age of a file in seconds."""
     #return int(time.time() - os.stat(file).st_ctime)
-    return time.time() - os.stat(file).st_mtime
+    return time.time() - os.stat(file_name).st_mtime
 
-def age_days_formated(file, sigfig=3, maybe_years=True):
+
+
+def age_days_formated(file_name, sigfig=3, maybe_years=True):
     """
     Return the age of a file in days.
 
-    Returns a string that represents the age of a file in
-    days. Formated in a specific way that should make parsing
-    the decimal part of the age easier for humans.
+    Returns the age of a file in days as a string, formated by
+    days_formated.
     """
-    days = age_seconds(file)/86400.0
+    return days_formated(age_seconds(file_name)/86400.0, sigfig, maybe_years)
+
+def days_formated(days, sigfig=3, maybe_years=True):
+    """
+    Return a value formated in a specific way.
+
+    Returns a string that represents the number of days given as an
+    argument formated in a specific way that should make parsing the
+    decimal part of the age easier for humans.
+    """
     # Calculate how many digits to show. Show full precision of days,
     # limited for shorter times.
     show_digits = max(sigfig - omag(days) - 1, 0)
