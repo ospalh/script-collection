@@ -3,10 +3,12 @@
 # © Copyright 2010–2 ospalh@gmail.com
 # License: GNU AGPL, version 3 or later; http://www.gnu.org/licenses/agpl.html
 
-import time
 import os
+import time
+
 
 __version__ = '1.1.0'
+
 
 def age_seconds(file):
     """Return the age of a file in seconds."""
@@ -25,17 +27,14 @@ Prints the age of FILE in seconds
     if len(sys.argv) < 2:
         print helpmsg
         sys.exit(0)
-
     if len(sys.argv) == 2:
         try:
             print(int(age_seconds(sys.argv[1])))
         except OSError as ose:
             sys.stderr.write(str(ose) + '\n')
-
-
     if len(sys.argv) > 2:
         for fl in sys.argv[1:]:
             try:
-                print(string.ljust(fl + ':' ,20) + str(int(age_seconds(fl))))
+                print(string.ljust(fl + ':', 20) + str(int(age_seconds(fl))))
             except OSError as ose:
                 sys.stderr.write(str(ose) + '\n')
