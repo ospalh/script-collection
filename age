@@ -7,7 +7,7 @@ import os
 import time
 
 
-__version__ = '1.1.0'
+__version__ = '1.1.1'
 
 
 def age_seconds(file):
