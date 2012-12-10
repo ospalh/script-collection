@@ -18,7 +18,6 @@ def age_seconds(file):
 
 if __name__ == '__main__':
     import sys
-    import string
 
     helpmsg = """Usage: age FILE [FILE2 ... [FILE_N]]
 Prints the age of FILE in seconds
@@ -34,7 +33,9 @@ Prints the age of FILE in seconds
             sys.stderr.write(str(ose) + '\n')
     if len(sys.argv) > 2:
         for fl in sys.argv[1:]:
+            flu = unicode(fl, sys.getfilesystemencoding())
             try:
-                print(string.ljust(fl + ':', 20) + str(int(age_seconds(fl))))
+                print(unicode.ljust(flu + u':', 20) +
+                      str(int(age_seconds(fl))))
             except OSError as ose:
                 sys.stderr.write(str(ose) + '\n')

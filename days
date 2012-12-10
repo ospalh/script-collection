@@ -6,7 +6,6 @@
 from decimal import Decimal
 import math
 import os
-import string
 import sys
 import time
 
@@ -99,7 +98,8 @@ Prints the age of FILE in days, using a non-standard formating of the days.
             sys.stderr.write(str(ose) + '\n')
     if len(sys.argv) > 2:
         for fl in sys.argv[1:]:
+            flu = unicode(fl, sys.getfilesystemencoding())
             try:
-                print(string.ljust(fl + ':', 20) + age_days_formated(fl))
+                print(unicode.ljust(flu + u':', 20) + age_days_formated(fl))
             except OSError as ose:
                 sys.stderr.write(str(ose) + '\n')
