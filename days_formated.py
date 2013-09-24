@@ -7,7 +7,7 @@ import math
 import sys
 from decimal import Decimal
 
-__version__ = '1.2.0'
+__version__ = '1.3.0'
 
 year = 365.2421897
 
