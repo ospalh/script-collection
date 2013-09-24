@@ -34,7 +34,7 @@ Prints the age of FILE in seconds
         for fl in sys.argv[1:]:
             flu = unicode(fl, sys.getfilesystemencoding())
             try:
-                print(unicode.ljust(flu + u':', 20) +
+                print(unicode.ljust(flu + u': ', 20) +
                       str(int(age_seconds(fl))))
             except OSError as ose:
                 sys.stderr.write(str(ose) + '\n')
