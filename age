@@ -1,13 +1,13 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 ; mode: python -*-
-# © Copyright 2010–2 ospalh@gmail.com
+# © Copyright 2010–13 Roland Sieker <ospalh@gmail.com>
 # License: GNU AGPL, version 3 or later; http://www.gnu.org/licenses/agpl.html
 
 import os
 import time
 
 
-__version__ = '1.1.1'
+__version__ = '1.3.0'
 
 
 def age_seconds(file):
@@ -18,7 +18,6 @@ def age_seconds(file):
 
 if __name__ == '__main__':
     import sys
-
     helpmsg = """Usage: age FILE [FILE2 ... [FILE_N]]
 Prints the age of FILE in seconds
 """
@@ -35,7 +34,7 @@ Prints the age of FILE in seconds
         for fl in sys.argv[1:]:
             flu = unicode(fl, sys.getfilesystemencoding())
             try:
-                print(unicode.ljust(flu + u':', 20) +
+                print(unicode.ljust(flu + u': ', 20) +
                       str(int(age_seconds(fl))))
             except OSError as ose:
                 sys.stderr.write(str(ose) + '\n')
