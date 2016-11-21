@@ -1,24 +1,21 @@
-#! /usr/bin/env python
+#! /bin/python3
 # -*- coding: utf-8 ; mode: python -*-
-# © Copyright 2010–13 Roland Sieker <ospalh@gmail.com>
+# © Copyright 2010–16 Roland Sieker <ospalh@gmail.com>
 # License: GNU AGPL, version 3 or later; http://www.gnu.org/licenses/agpl.html
 
 from decimal import Decimal
+import argparse
 import math
 import os
 import sys
 import time
 
-__version__ = '1.3.0'
+__version__ = '2.0.0'
 
 year = 365.2421897
 
-if sys.platform.startswith("win32"):
-    # Chicken out. use ASCII on windows.
-    day_format_separators = {-1: '.', -3: "'", -4: "'", -6: "'"}
-else:
-    day_format_separators = {-1: u'.', -3: u"’", -4: u"’", -6: u"’"}
-
+day_format_separators = {-1: ".", -3: "’", -4: "’", -6: "’"}
+ascii_day_format_separators = {-1: ".", -3: "'", -4: "'", -6: "'"}
 
 def omag(x):
     """Return the order of magnitude of a number."""
@@ -34,17 +31,18 @@ def age_seconds(file_name):
     return time.time() - os.stat(file_name).st_mtime
 
 
-def age_days_formated(file_name, sigfig=3, maybe_years=True):
+def age_days_formated(file_name, sigfig=3, maybe_years=True, just_ascii=False):
     """
     Return the age of a file in days.
 
     Returns the age of a file in days as a string, formated by
     days_formated.
     """
-    return days_formated(age_seconds(file_name) / 86400.0, sigfig, maybe_years)
+    return days_formated(
+        age_seconds(file_name)/86400.0, sigfig, maybe_years, just_ascii=False)
 
 
-def days_formated(days, sigfig=3, maybe_years=True):
+def days_formated(days, sigfig=3, maybe_years=True, just_ascii=False):
     """
     Return a value formated in a specific way.
 
@@ -54,6 +52,10 @@ def days_formated(days, sigfig=3, maybe_years=True):
     """
     # Calculate how many digits to show. Show full precision of days,
     # limited for shorter times.
+    if just_ascii:
+        form_seps = ascii_day_format_separators
+    else:
+        form_seps = day_format_separators
     show_digits = max(sigfig - omag(days) - 1, 0)
     out_string = ''
     if 0 == show_digits:
@@ -67,14 +69,14 @@ def days_formated(days, sigfig=3, maybe_years=True):
             out_string = '-'
         for pad in range(0, dec_exponent + ndig - 1, -1):
             try:
-                out_string += day_format_separators[pad]
+                out_string += form_seps[pad]
             except KeyError:
                 pass
             out_string += '0'
         for ex, dg in enumerate(dec_digits):
             # Add a decorator if it is the right position
             try:
-                out_string += day_format_separators[
+                out_string += form_seps[
                     -ex + dec_exponent + ndig - 1]
             except KeyError:
                 pass
@@ -85,21 +87,29 @@ def days_formated(days, sigfig=3, maybe_years=True):
 
 
 if __name__ == '__main__':
-    helpmsg = """Usage: days FILE [FILE2 ... [FILE_N]]
-Prints the age of FILE in days, using a non-standard formating of the days.
-"""
-    if len(sys.argv) < 2:
-        print helpmsg
-        sys.exit(0)
-    if len(sys.argv) == 2:
+    parser = argparse.ArgumentParser(
+        description="""Print age of files in days using a non-standard
+formating""")
+    parser.add_argument(
+        '--ascii', '-a', action='store_true',
+        help="""Use ASCII apostropes, U+0027, instead of the 9-shaped one,
+ U+2019""")
+    parser.add_argument(
+        '--verbose', '-v', action='store_true',
+        help='''Use long form, repeating the file name for a single file as
+ well''')
+    parser.add_argument('file', nargs='+')
+    args = parser.parse_args()
+    if not args.verbose and len(args.file) == 1:
         try:
-            print(age_days_formated(sys.argv[1]))
+            print(age_days_formated(args.file[0], just_ascii=args.ascii))
         except OSError as ose:
             sys.stderr.write(str(ose) + '\n')
-    if len(sys.argv) > 2:
-        for fl in sys.argv[1:]:
-            flu = unicode(fl, sys.getfilesystemencoding())
+    else:
+        for onef in args.file:
             try:
-                print(unicode.ljust(flu + u': ', 20) + age_days_formated(fl))
+                print(
+                    str.ljust(onef + ': ', 20) +
+                    age_days_formated(onef, just_ascii=args.ascii))
             except OSError as ose:
                 sys.stderr.write(str(ose) + '\n')
