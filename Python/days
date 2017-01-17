@@ -17,6 +17,7 @@ year = 365.2421897
 day_format_separators = {-1: ".", -3: "’", -4: "’", -6: "’"}
 ascii_day_format_separators = {-1: ".", -3: "'", -4: "'", -6: "'"}
 
+
 def omag(x):
     """Return the order of magnitude of a number."""
     try:
@@ -27,7 +28,7 @@ def omag(x):
 
 def age_seconds(file_name):
     """Return the age of a file in seconds."""
-    #return int(time.time() - os.stat(file).st_ctime)
+    # We could maybe optionally use st_ctime instead of st_mtime.
     return time.time() - os.stat(file_name).st_mtime
 
 
@@ -95,6 +96,9 @@ formating""")
         help="""Use ASCII apostropes, U+0027, instead of the 9-shaped one,
  U+2019""")
     parser.add_argument(
+        '--seconds', '-s', action='store_true',
+        help='''Print the age in seconds, not days''')
+    parser.add_argument(
         '--verbose', '-v', action='store_true',
         help='''Use long form, repeating the file name for a single file as
  well''')
@@ -102,14 +106,22 @@ formating""")
     args = parser.parse_args()
     if not args.verbose and len(args.file) == 1:
         try:
-            print(age_days_formated(args.file[0], just_ascii=args.ascii))
+            if args.seconds:
+                print(str(int(age_seconds(args.file[0]))))
+            else:
+                print(age_days_formated(args.file[0], just_ascii=args.ascii))
         except OSError as ose:
             sys.stderr.write(str(ose) + '\n')
     else:
         for onef in args.file:
             try:
-                print(
-                    str.ljust(onef + ': ', 20) +
-                    age_days_formated(onef, just_ascii=args.ascii))
+                if args.seconds:
+                    print(
+                        str.ljust(onef + ': ', 20) +
+                        str(int(age_seconds(onef))))
+                else:
+                    print(
+                        str.ljust(onef + ': ', 20) +
+                        age_days_formated(onef, just_ascii=args.ascii))
             except OSError as ose:
                 sys.stderr.write(str(ose) + '\n')
