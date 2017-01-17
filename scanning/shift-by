@@ -1,0 +1,52 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 ; mode: python -*-
+#
+#  © Copyright 2015 Roland Sieker <ospalh@gmail.com>
+#
+# License: GNU AGPL, version 3 or later;
+#  http://www.gnu.org/licenses/agpl.html
+
+
+
+
+import argparse
+import glob
+import shutil
+import os
+import re
+import sys
+
+__version__ = '0.0.1'
+
+
+def shift_files(args):
+    gl_list = glob.glob(args.prefix + '[0-9][0-9][0-9]' + args.suffix)
+    gl_list.sort(reverse=(args.by > 0))
+    for in_file in gl_list:
+        num = re.sub('^' + args.prefix , '', in_file)
+        num = re.sub(args.suffix + '$', '', num)
+        num = int(num)
+        if num < args.min:
+            continue
+        out_file = '{p}{n:03}{s}'.format(
+                p=args.prefix, n=(num + args.by), s=args.suffix)
+        shutil.move(in_file, out_file)
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(
+        description="""Move files to file name with another number""")
+    parser.add_argument(
+        '--prefix', type=str,
+        help='''Bit of file name before the number''')
+    parser.add_argument(
+        '--suffix', type=str,
+        help='''Bit of file name after the number''')
+    parser.add_argument(
+        '--by', type=int, default=2,
+        help='''Number to add to the file name''')
+    parser.add_argument(
+        '--min', type=int, default=0,
+        help='''Number to add to the file name''')
+    args = parser.parse_args()
+    shift_files(args)
