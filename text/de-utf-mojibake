@@ -1,0 +1,35 @@
+#!//bin/python3
+# -*- coding: utf-8 ; mode: python -*-
+#
+#  © Copyright 2016–2017 Roland Sieker <ospalh@gmail.com>
+#
+# License: GNU AGPL, version 3 or later;
+#  http://www.gnu.org/licenses/agpl.html
+
+
+
+
+import argparse
+import io
+import os
+import re
+import tempfile
+
+__version__ = '0.0.2'
+
+
+def do_process(filename, outfile):
+    with io.open(filename, 'r+', encoding='utf-8') as inf:
+        with open(outfile, 'w') as outf:
+            baked_input = inf.read()
+            # outf.write(baked_input.encode('latin1').decode('utf-8'))
+            outf.write(baked_input.encode('cp1252').decode('utf-8'))
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(
+        description="""Process content of file INFILE, and overwrite original \
+file with new content when done.""")
+    parser.add_argument("infile", type=str, help='''The file to process''')
+    parser.add_argument("outfile", type=str, help='''The output file''')
+    args = parser.parse_args()
+    do_process(args.infile, args.outfile)

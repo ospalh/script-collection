@@ -1,0 +1,34 @@
+#!//bin/python3
+# -*- coding: utf-8 ; mode: python -*-
+#
+#  © Copyright 2017 Roland Sieker <ospalh@gmail.com>
+#
+# License: GNU AGPL, version 3 or later;
+#  http://www.gnu.org/licenses/agpl.html
+
+
+import argparse
+import unicodedata
+
+__version__ = '0.0.1'
+
+
+def name_em(characters):
+    """Name unicode characters
+
+    Print the names of each unicode character in characters, together
+    with the character itself, and the hexedecimal code point.
+    """
+    for one_char in characters:
+        print(
+            "» {c} «: {n} {h}".format(
+                c=one_char, n=unicodedata.name(one_char),
+                h=hex(ord(one_char))))
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(
+        description="""Print each character, its Unicode name and code \
+        point of the argument.""")
+    parser.add_argument("characters", type=str, help='''Characters to name''')
+    args = parser.parse_args()
+    name_em(args.characters)
