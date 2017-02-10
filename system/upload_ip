@@ -1,0 +1,27 @@
+#! /bin/python3
+# -*- coding: utf-8 ; mode: python -*-
+# © Copyright 2017 Roland Sieker <ospalh@gmail.com>
+# License: GNU AGPL, version 3 or later; http://www.gnu.org/licenses/agpl.html
+
+
+import socket
+import urllib.request
+import dropbox
+
+__version__ = "0.0.1"
+
+file_name_template = "/{host}’s ip.html"
+myip_url = "http://checkip.dyndns.org/"
+dbx_token = "your_OAUTH2_token"
+
+
+def upload_ip():
+    ip_page_file = urllib.request.urlopen(myip_url)
+    ip_page_bytes = ip_page_file.read()
+    upload_file_name = file_name_template.format(host=socket.gethostname())
+    dbx = dropbox.Dropbox(dbx_token)
+    dbx.files_upload(
+        ip_page_bytes, upload_file_name, dropbox.files.WriteMode.overwrite)
+
+if __name__ == '__main__':
+    upload_ip()
