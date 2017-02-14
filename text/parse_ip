@@ -1,0 +1,23 @@
+#! /bin/python3
+# -*- coding: utf-8 ; mode: python -*-
+# © Copyright 2017 Roland Sieker <ospalh@gmail.com>
+# License: GNU AGPL, version 3 or later; http://www.gnu.org/licenses/agpl.html
+
+
+from bs4 import BeautifulSoup
+import argparse
+
+__version__ = "0.0.1"
+
+
+def parse_ip(file_name):
+    with open(file_name) as infile:
+        soup = BeautifulSoup(infile.read(), 'html.parser')
+        print(soup.body.text.split()[-1])
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(
+        description="""Parses the html infile and prints the last word of the body, which, hopefully, is an IP address""")
+    parser.add_argument("infile", type=str, help='''The file to process''')
+    args = parser.parse_args()
+    parse_ip(args.infile)
