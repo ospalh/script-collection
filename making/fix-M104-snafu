@@ -1,0 +1,2 @@
+#!/bin/bash
+sed -i 's/M104 S\([0-9\.]\+\) ; set temperature/M104 S\1 T0 ; set temperature of tool 0 (fixed)/' "${1}"
