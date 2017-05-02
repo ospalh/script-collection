@@ -20,9 +20,13 @@ def name_em(characters):
     with the character itself, and the hexedecimal code point.
     """
     for one_char in characters:
+        try:
+            uc_name = unicodedata.name(one_char)
+        except ValueError as ve:
+            uc_name = "({ve})".format(ve=ve)
         print(
             "» {c} «: {n} {h}".format(
-                c=one_char, n=unicodedata.name(one_char),
+                c=one_char, n=uc_name,
                 h=hex(ord(one_char))))
 
 if __name__ == '__main__':
