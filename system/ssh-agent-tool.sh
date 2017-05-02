@@ -8,7 +8,7 @@
 candidate_pid=$(pgrep -u $(whoami) -a ssh-agent | grep ~/.ssh/agent/socket | awk '{print $1}')
 # N.B.: The ~ gets expanded, here and below.
 
-if [ ${candidate_pid}  > 0 ]
+if [[ ${candidate_pid}  > 0 ]]
 then
     echo Re-using agent with pid  ${candidate_pid}
     # There is an ssh-agent belonging to us running. Use that.
