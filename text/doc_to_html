@@ -4,5 +4,5 @@ if [ $# -eq 2 ]
 then
     ooffice --headless --convert-to html --outdir "$2" "$1"
 else
-    ooffice --headless --convert-to html --outdir "$2" "$1"
+    ooffice --headless --convert-to html "$1"
 fi
