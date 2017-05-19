@@ -2,12 +2,11 @@
 
 sed -i 's/<[^>]*>//g' "$1"
 sed -i 's/<!--//' "$1"
-sed -i 's/runScroller();//' "$1"
 sed -i 's/-->//' "$1"
 sed -i 's@^ *// *$@@' "$1"
 
 temp_file=$(mktemp)
 
-sed 's/ \+//' <"$1" >"$temp_file"
+sed 's/^ \+$//' <"$1" >"$temp_file"
 cat -s <"$temp_file" >"$1"
 rm "$temp_file"
