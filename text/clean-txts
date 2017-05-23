@@ -1,5 +1,5 @@
 #!/bin/bash
-
+shopt -s failglob
 for fl in *.txt
 do
     echo "$fl"
