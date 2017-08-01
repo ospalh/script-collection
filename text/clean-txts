@@ -1,0 +1,8 @@
+#!/bin/bash
+shopt -s failglob
+for fl in *.txt
+do
+    echo "$fl"
+    tag-strip "$fl"
+    asymmetric_quotes "$fl"
+done
