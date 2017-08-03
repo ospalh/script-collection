@@ -41,5 +41,5 @@ file with new content when done.""")
     try:
         do_process(args.infile)
     except UnicodeDecodeError as ude:
-        print('Trying file {} with “cp1252” encoding'.format(args.infile))
+        print('Trying file “{}” with “cp1252” encoding'.format(args.infile))
         do_process(args.infile, encoding='cp1252', suffix='~c~')
