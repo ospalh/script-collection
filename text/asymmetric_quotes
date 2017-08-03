@@ -16,12 +16,12 @@ import tempfile
 
 __version__ = '0.0.1'
 
-
-def do_process(filename):
+#            outf.write(baked_input.encode().decode('utf-8'))
+def do_process(filename, encoding=None):
     dirname, basename = os.path.split(filename)
     temp = tempfile.NamedTemporaryFile(
         prefix=basename, suffix='~', dir=dirname, delete=False, mode='w')
-    with open(filename, 'r') as inf:
+    with open(filename, 'r', encoding=encoding) as inf:
         for line in inf.readlines():
             line = re.sub(r"(\w)'(\w)", r"\1’\2", line)
             line = re.sub(r'(\s|^)"([^s])', r"\1“\2", line)
@@ -38,4 +38,8 @@ if __name__ == '__main__':
 file with new content when done.""")
     parser.add_argument("infile", type=str, help='''The file to process''')
     args = parser.parse_args()
-    do_process(args.infile)
+    try:
+        do_process(args.infile)
+    except UnicodeDecodeError as ude:
+        print('Trying file {} with “cp1252” encoding'.format(args.infile))
+        do_process(args.infile, encoding='cp1252')
