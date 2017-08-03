@@ -17,7 +17,7 @@ import tempfile
 __version__ = '0.0.1'
 
 #            outf.write(baked_input.encode().decode('utf-8'))
-def do_process(filename, encoding=None):
+def do_process(filename, encoding=None, suffix='~'):
     dirname, basename = os.path.split(filename)
     temp = tempfile.NamedTemporaryFile(
         prefix=basename, suffix='~', dir=dirname, delete=False, mode='w')
@@ -42,4 +42,4 @@ file with new content when done.""")
         do_process(args.infile)
     except UnicodeDecodeError as ude:
         print('Trying file {} with “cp1252” encoding'.format(args.infile))
-        do_process(args.infile, encoding='cp1252')
+        do_process(args.infile, encoding='cp1252', suffix='~c~')
