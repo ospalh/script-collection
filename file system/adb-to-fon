@@ -11,7 +11,7 @@
 
 import argparse
 import re
-import subprocess
+import os
 from urllib.parse import unquote
 
 __version__ = '0.0.1'
@@ -19,19 +19,23 @@ __version__ = '0.0.1'
 def do_process(playlist, target):
     with open(playlist, 'r') as inf:
         for line in inf.readlines():
-            line = line.rstrip()
-            if line.startswith('File'):
-                mfp = re.sub(r'^File[0-9]+=', r"", line)
-                mfile = unquote(mfp)
-                print(mfile)
-                subprocess.call(["adb", "push", mfile, target])
+            name_and_number = re.search("File([0-9]+)=file://([^\n]*)", line)
+            if name_and_number is None:
+                continue
+            number = int(name_and_number.group(1))
+            origin = unquote(name_and_number.group(2))
+            name = os.path.basename(origin)
+            target = "{nr:03d} - {fn}".format(nr=number, fn=name)
+            print(target)
+            os.link(origin, target)
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description="""Push files from pls play list to fon with adb.""")
     parser.add_argument("--playlist", "-p", type=str, help='''The playlist''')
     parser.add_argument(
-        "--target", "-t", type=str, default="/sdcard/Music/",
+        "--target", "-t", type=str, default="/storage/emulated/0/Music/",
         help='''The target folder on the fon''')
     args = parser.parse_args()
     do_process(args.playlist, args.target)
