@@ -27,15 +27,12 @@ def do_process(playlist, target):
             name = os.path.basename(origin)
             target = "{nr:03d} - {fn}".format(nr=number, fn=name)
             print(target)
-            os.link(origin, target)
+            #os.link(origin, target)
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description="""Push files from pls play list to fon with adb.""")
-    parser.add_argument("--playlist", "-p", type=str, help='''The playlist''')
-    parser.add_argument(
-        "--target", "-t", type=str, default="/storage/emulated/0/Music/",
-        help='''The target folder on the fon''')
+    parser.add_argument(type=str, help='''The playlist''')
     args = parser.parse_args()
     do_process(args.playlist, args.target)
