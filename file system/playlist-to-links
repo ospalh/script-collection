@@ -16,7 +16,7 @@ from urllib.parse import unquote
 
 __version__ = '0.0.1'
 
-def do_process(playlist, target):
+def do_process(playlist):
     with open(playlist, 'r') as inf:
         for line in inf.readlines():
             name_and_number = re.search("File([0-9]+)=file://([^\n]*)", line)
@@ -33,6 +33,6 @@ def do_process(playlist, target):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description="""Push files from pls play list to fon with adb.""")
-    parser.add_argument(type=str, help='''The playlist''')
+    parser.add_argument("playlist", type=str, help='''The playlist''')
     args = parser.parse_args()
-    do_process(args.playlist, args.target)
+    do_process(args.playlist)
