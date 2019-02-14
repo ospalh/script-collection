@@ -6,7 +6,7 @@
 #  Try "/storage/emulated/0/Music/" as adb target
 # License: GNU AGPL, version 3 or later;
 #  http://www.gnu.org/licenses/agpl.html
-
+# At the moment for pls file lists out of Rhytmbox
 
 
 
@@ -17,23 +17,26 @@ from urllib.parse import unquote
 
 __version__ = '0.0.1'
 
-def do_process(playlist):
+def do_process(playlist, from_path):
     with open(playlist, 'r') as inf:
         for line in inf.readlines():
-            name_and_number = re.search("File([0-9]+)=file://([^\n]*)", line)
+            name_and_number = re.search("File([0-9]+)=([^\n]*)", line)
             if name_and_number is None:
                 continue
             number = int(name_and_number.group(1))
             origin = unquote(name_and_number.group(2))
             name = os.path.basename(origin)
+            if from_path is not None:
+                origin = os.path.join(from_path, origin)
             target = "{nr:03d} - {fn}".format(nr=number, fn=name)
             print(target)
-            #os.link(origin, target)
+            os.link(origin, target)
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description="""Push files from pls play list to fon with adb.""")
-    parser.add_argument("playlist", type=str, help='''The playlist''')
+    parser.add_argument("--playlist", type=str, help='''The playlist''')
+    parser.add_argument("--from_path", type=str, help='''Where the files lie''')
     args = parser.parse_args()
-    do_process(args.playlist)
+    do_process(args.playlist, args.from_path)
