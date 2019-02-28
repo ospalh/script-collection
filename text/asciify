@@ -37,6 +37,19 @@ replace_pairs = [
     ("ü", "ue"),
     ("ß", "ss"),
     ("⌀", "diameter"),
+    ("÷", "/"),
+    ("€", "euro"),
+    ("¢", "cent"),
+    ("½", "1/2"),
+    ("⅓", "1/3"),
+    ("¼", "1/4"),
+    (" ", " "),
+    ("→", "->"),
+    ("′", "Fuesse oder Minuten"),
+    ("″", "Zoll oder Sekunden"),
+    ("é", "e"),
+    ("ůš", "us"),  # as in “Průša”
+    # ("", ""),
     # ("", ""),
     ("µ", "micro")
 ]
@@ -47,7 +60,7 @@ def do_process(filename, encoding=None, suffix='~'):
         prefix=basename, suffix=suffix, dir=dirname, delete=False, mode='w')
     with open(filename, 'r', encoding=encoding) as inf:
         for line in inf.readlines():
-            line = re.sub(r"[‘’]", r"'", line)  # Python’s rules for »"«  …
+            line = re.sub(r"[‘’›‹]", r"'", line)  # Python’s rules for »"«  …
             line = re.sub(r'[“”»«]', r'"', line)  # … and »'« come in handy
             # Simple replace for single from string should be enough
             line = line.replace("©", "(c)")
