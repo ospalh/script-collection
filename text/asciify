@@ -1,0 +1,78 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 ; mode: python -*-
+#
+# Opposite of assymetric_quotes. Replace those and other non-ASCII
+# characters with ASCII approximations
+#
+#  © Copyright 2016–2019 Roland Sieker <ospalh@gmail.com>
+#
+# License: GNU AGPL, version 3 or later;
+#  http://www.gnu.org/licenses/agpl.html
+
+
+
+
+import argparse
+import os
+import re
+import tempfile
+
+__version__ = '0.0.1'
+
+replace_pairs = [
+    ("–", "-"),
+    ("—", " - "),
+    ("…", "..."),
+    ("°", " degrees"),
+    # A number of these are specific to my files. Whatever.
+    ("π", "pi"),
+    ("τ", "tau"),
+    # Standard German
+    ("Ä", "Ae"),
+    ("Ö", "Oe"),
+    ("Ü", "Ue"),
+    ("ẞ", "SS"),  # Hah!
+    ("ä", "ae"),
+    ("ö", "oe"),
+    ("ü", "ue"),
+    ("ß", "ss"),
+    ("⌀", "diameter"),
+    # ("", ""),
+    ("µ", "micro")
+]
+
+def do_process(filename, encoding=None, suffix='~'):
+    dirname, basename = os.path.split(filename)
+    temp = tempfile.NamedTemporaryFile(
+        prefix=basename, suffix=suffix, dir=dirname, delete=False, mode='w')
+    with open(filename, 'r', encoding=encoding) as inf:
+        for line in inf.readlines():
+            line = re.sub(r"[‘’]", r"'", line)  # Python’s rules for »"«  …
+            line = re.sub(r'[“”»«]', r'"', line)  # … and »'« come in handy
+            # Simple replace for single from string should be enough
+            line = line.replace("©", "(c)")
+            for t, f in replace_pairs:
+                line = line.replace(t,f)
+            # I guess
+            #Standard German
+            line = line.replace("", "")
+
+            temp.write(line)
+    temp.close()
+    os.rename(temp.name, filename)
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(
+        description="""Process content of file INFILE, and overwrite original \
+file with new content when done.""")
+    parser.add_argument("infile", type=str, help='''The file to process''')
+    args = parser.parse_args()
+    try_again = False
+    try:
+        do_process(args.infile)
+    except UnicodeDecodeError as ude:
+        print(
+            'Trying file “{}” with “cp1252” encoding next'.format(args.infile))
+        try_again = True
+    if try_again:
+        do_process(args.infile, encoding='cp1252', suffix='~#')
