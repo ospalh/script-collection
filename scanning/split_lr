@@ -1,0 +1,10 @@
+#!/bin/bash
+
+mkdir -p lr
+for fl in *.* :
+do
+    pr=$(echo ${fl} | awk  -F "." '{print $1}')
+    su=$(echo ${fl} | awk  -F "." '{print $2}')
+    echo $pr
+    convert "${fl}" -crop 2x1@ +repage lr/${pr}_%d.${su}
+done
