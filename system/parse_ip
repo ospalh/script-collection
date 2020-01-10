@@ -3,6 +3,8 @@
 # © Copyright 2017 Roland Sieker <ospalh@gmail.com>
 # License: GNU AGPL, version 3 or later; http://www.gnu.org/licenses/agpl.html
 
+# Turns out, this is just the hard way.
+# Do `curl icanhazip.com`, et voilà.
 
 from bs4 import BeautifulSoup
 import argparse

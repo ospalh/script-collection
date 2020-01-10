@@ -1,0 +1,7 @@
+#!/bin/bash
+
+INFILE="$1"
+TMPOUTFILE="${INFILE%.*}"
+OUTFILE="${TMPOUTFILE##*/}.ogg"
+
+nice ffmpeg -i "${INFILE}" -vn -acodec libvorbis "${OUTFILE}"

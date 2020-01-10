@@ -1,0 +1,11 @@
+#!/bin/bash
+
+INFILE="$1"
+TMPOUTFILE="${INFILE%.*}"
+OUTFILE="${TMPOUTFILE##*/}.ogg"
+TARGETFILE=${INFILE##*/}
+
+
+nice ffmpeg -i "${INFILE}" -vn -acodec libvorbis "${OUTFILE}" && mv "${INFILE}" "b/${TARGETFILE}"
+echo $TARGETFILE
+ls ../|head

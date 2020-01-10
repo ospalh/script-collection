@@ -17,7 +17,7 @@ from urllib.parse import unquote
 
 __version__ = '0.0.1'
 
-def do_process(playlist, from_path):
+def do_process(playlist, path):
     with open(playlist, 'r') as inf:
         for line in inf.readlines():
             name_and_number = re.search("File([0-9]+)=([^\n]*)", line)
@@ -26,8 +26,8 @@ def do_process(playlist, from_path):
             number = int(name_and_number.group(1))
             origin = unquote(name_and_number.group(2))
             name = os.path.basename(origin)
-            if from_path is not None:
-                origin = os.path.join(from_path, origin)
+            if path is not None:
+                origin = os.path.join(path, origin)
             target = "{nr:03d} - {fn}".format(nr=number, fn=name)
             print(target)
             os.link(origin, target)
@@ -35,8 +35,12 @@ def do_process(playlist, from_path):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
-        description="""Push files from pls play list to fon with adb.""")
-    parser.add_argument("--playlist", type=str, help='''The playlist''')
-    parser.add_argument("--from_path", type=str, help='''Where the files lie''')
+        description="""Make hard links from a playlist.""")
+    parser.add_argument(
+        "--playlist", type=str, help='''The playlist''',
+        default="/home/roland/Musik/Fon ad-hoc.pls" )
+    parser.add_argument(
+        "--path", type=str, help='''Where the files lie''',
+        default="/home/roland/Musik/")
     args = parser.parse_args()
-    do_process(args.playlist, args.from_path)
+    do_process(args.playlist, args.path)
