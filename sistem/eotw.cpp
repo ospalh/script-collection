@@ -1,11 +1,14 @@
+// -*- mode: C++ ; c-file-style: "ellemtel" ; coding: utf-8 -*-
+//
+// © 2013–2020  Roland Sieker <ospalh@gmail.com>
+// Licence: CC-BY-SA 4.0
+
 #include <ctime>
 #include <iostream>
 
 int main()
 {
-   int size;
-   size = sizeof(time_t);
-//  printf("time_t ist %d bytes lang.\n",size);
+   int size = sizeof(time_t);
    std::cout << "time_t ist " << size << " chars lang.\n";
    if (size == 4)
    {
