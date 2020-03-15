@@ -51,6 +51,7 @@ replace_pairs = [
     ("ůš", "us"),  # as in “Průša”
     # ("", ""),
     # ("", ""),
+    ("©", "(c)"),
     ("µ", "micro")
 ]
 
@@ -62,8 +63,6 @@ def do_process(filename, encoding=None, suffix='~'):
         for line in inf.readlines():
             line = re.sub(r"[‘’›‹]", r"'", line)  # Python’s rules for »"«  …
             line = re.sub(r'[“”»«]', r'"', line)  # … and »'« come in handy
-            # Simple replace for single from string should be enough
-            line = line.replace("©", "(c)")
             for t, f in replace_pairs:
                 line = line.replace(t,f)
             # I guess
