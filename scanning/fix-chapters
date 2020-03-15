@@ -1,0 +1,1 @@
+for nr in {1..7} extra ; do mkdir c$nr ; pushd c$nr ; (unrar x ../../*${nr}*.rar || unzip ../../*${nr}.*) ; mv */* . ; rmdir * ; rename '[WOW!scans]' '' *; rm *redit* Thu* ;popd ; done
