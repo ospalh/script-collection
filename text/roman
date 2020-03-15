@@ -1,0 +1,30 @@
+#! /bin/python3
+# -*- coding: utf-8 ; mode: python -*-
+# © Copyright 20120 Roland Sieker <ospalh@gmail.com>
+# License: GNU AGPL, version 3 or later; http://www.gnu.org/licenses/agpl.html
+
+import roman
+import sys
+
+___version___ = "0.0.1"
+
+"""Convert roman number to integer
+
+Quick wrapper to convert roman numerals to standard Euro-Arabian
+integers.
+"""
+
+if __name__ == '__main__':
+    try:
+        instr = sys.argv[1]
+    except IndexError:
+        instr = str(sys.stdin.read().strip())
+    if instr == '-':
+        instr = str(sys.stdin.read().strip())
+    if not instr:
+        print("No input", file=sys.stderr)
+        exit(1)
+    try:
+        print(roman.fromRoman(instr), file=sys.stdout)
+    except roman.InvalidRomanNumeralError:
+        print(roman.toRoman(int(instr)), file=sys.stdout)
