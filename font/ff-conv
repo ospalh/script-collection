@@ -1,0 +1,10 @@
+#!/bin/bash
+# Found at https://jeromejaglale.com/doc/convert_pfb_pfm_font_to_otf
+# Many thanks to Jérôme Jaglale
+# Updatetd the stile
+
+export FONTFORGE_LANGUAGE=ff
+if (test -f $1)
+then
+    tootf $1
+fi
