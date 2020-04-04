@@ -1,0 +1,10 @@
+#!/bin/bash
+
+fout=$(file -b "$1")
+
+if [[ $fout == *"JPEG image data, JFIF"* ]]
+then
+    jpegtran -rotate 90 -outfile "$1" "$1"
+else
+    mogrify -rotate 90 "$1"
+fi
