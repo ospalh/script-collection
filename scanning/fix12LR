@@ -21,10 +21,10 @@ import os
 import re
 import sys
 
-__version__ = '0.0.1'
+__version__ = '0.1.0'
 
 
-def un_one_two(args, one_two):
+def fix12LR(args):
     if args.prefix:
         glob_prefix = args.prefix
         re_prefix = re.escape(args.prefix)
@@ -34,16 +34,20 @@ def un_one_two(args, one_two):
     gl_list = glob.glob(
         glob_prefix + '[0-9]' * args.digits + '_[12][LR]' +
         args.suffix)
+    fn_re = re.compile(
+        '('+ re_prefix + r')(\d{' + str(args.digits) + r'})_([12])[LR]' +
+        re.escape(args.suffix), re.IGNORECASE)
     for in_file in gl_list:
-        fn_re = re.compile(
-            '('+ glob_prefix + r')(\d{' + args.digits + r'})_[LR]' +
-            re.escape(args.suffix))
-        num = re.sub('^' + args.prefix , '', in_file)
-        num = re.sub('_[12][LR]' + args.suffix + '$', '', num)
-        num = int(num)
+        fn_bits = re.search(fn_re, in_file)
+        try:
+            num = int(fn_bits.group(2)) + int(fn_bits.group(3)) - 1
+        except (ValueError, AttributeError):
+            print('File name “{i}” doesn’t fit our pattern.'.format(i=in_file),
+                  file=sys.stderr)
+            continue
         out_file = '{p}{n:03}{s}'.format(
-                p=args.prefix, n=(num + one_two - 1), s=args.suffix)
-        # print("moving “{}” → “{}”".format(in_file, out_file))
+            p=fn_bits.group(1), n=num, s=args.suffix)
+        print("moving “{}” → “{}”".format(in_file, out_file))
         if not os.path.exists(out_file):
             shutil.move(in_file, out_file)
         else:
@@ -58,11 +62,10 @@ if __name__ == '__main__':
         '-p', '--prefix', type=str,
         help='''Bit of file name before the number''')
     parser.add_argument(
-        '-s', '--suffix', type=str, default='.tif'
+        '-s', '--suffix', type=str, default='.tif',
         help='''Bit of file name after the number''')
     parser.add_argument(
-        '-d', '--digits', type=int, default=3
+        '-d', '--digits', type=int, default=3,
         help='''How many digits in the page number''')
     args = parser.parse_args()
-    un_one_two(args, 1)
-    un_one_two(args, 2)
+    fix12LR(args)
