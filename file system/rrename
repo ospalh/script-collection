@@ -1,0 +1,51 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 ; mode: python -*-
+#
+#  © Copyright 2015–2020 Roland Sieker <ospalh@gmail.com>
+#
+# License: GNU AGPL, version 3 or later;
+#  http://www.gnu.org/licenses/agpl.html
+
+
+
+
+import argparse
+import shutil
+import os
+import re
+import sys
+
+__version__ = '0.0.1'
+
+
+def rename_files(args):
+    for in_file in args.file:
+        out_file = re.sub(args.frm, args.to, in_file)
+        if not out_file:
+            print('pattern not found in “{inf}”'.format(inf=in_file), file=sys.stderr)
+            continue
+        print('rename “{inf}” → “{outf}”'.format(inf=in_file, outf=out_file), file=sys.stderr)
+        if os.path.exists(out_file) and not args.clobber:
+            print('skipping, output exists', file=sys.stderr)
+            continue
+        if args.n:
+            continue
+        shutil.move(in_file, out_file)
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(
+        description="""Move files to file name with another number""")
+    parser.add_argument(
+        '-f', '--from', type=str, help='''First regexp''', required=True, dest='frm')
+    parser.add_argument(
+        '-t', '--to', type=str, help='''Second regexp''', required=True)
+    parser.add_argument(
+        '-n', action='store_true',
+        help='''Don’t rename, only print what would be done.''')
+    parser.add_argument(
+        '-c', '--clobber', action='store_true',
+        help='''Overwrite files that are already there.''')
+    parser.add_argument('file', nargs='+')
+    args = parser.parse_args()
+    rename_files(args)
