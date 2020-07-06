@@ -22,12 +22,16 @@ def rename_files(args):
     for in_file in args.file:
         out_file = re.sub(args.frm, args.to, in_file)
         if not out_file:
-            print('pattern not found in “{inf}”'.format(inf=in_file), file=sys.stderr)
+            # I think this test is redundant
+            print('Pattern not found in “{inf}”'.format(inf=in_file), file=sys.stderr)
+            continue
+        if in_file == out_file:
+            print('Skipping “{inf}”, Nothing to do'.format(inf=in_file), file=sys.stderr)
+            continue
+        if os.path.exists(out_file) and not args.clobber:
+            print('Skipping “{inf}”, output exists'.format(inf=in_file), file=sys.stderr)
             continue
         print('rename “{inf}” → “{outf}”'.format(inf=in_file, outf=out_file), file=sys.stderr)
-        if os.path.exists(out_file) and not args.clobber:
-            print('skipping, output exists', file=sys.stderr)
-            continue
         if args.n:
             continue
         shutil.move(in_file, out_file)
