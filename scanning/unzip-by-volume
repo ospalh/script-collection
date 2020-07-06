@@ -1,0 +1,24 @@
+#!/bin/bash
+
+maxv=7
+vmark=_v
+#vmark=_vol
+
+#for vol in $(seq -w 1 $maxv)
+for vol in $(seq 1 $maxv)
+do
+    vv=v${vol}
+    mkdir $vv
+    pushd $vv
+    for fl in ../*$vmark${vol}*.{zip,cbz}
+    do
+        echo unziping "${fl}"
+        unzip "${fl}"
+    done
+    for fl in ../*${vmark}${vol}*.{rar,cbr}
+    do
+        echo unziping "${fl}"
+        unrar x "${fl}"
+    done
+    popd
+done

@@ -1,0 +1,26 @@
+#!/bin/bash
+if [ $# -lt 2 ]
+then
+    echo "Provide basename and end number"
+    exit 1
+fi
+
+filebase=$1
+endnr=$2
+
+mkdir -p lr/
+
+for evs in $(seq 0 2 $endnr)
+do
+    ods=$((evs+1))
+    printf -v ev "%03d" $evs
+    printf -v od "%03d" $ods
+    fli=${filebase}${ev}-${od}.jpg
+    convert -crop  2x1@ +repage ${filebase}${ev}-${od}.jpg lr/"${filebase}${ev}.jpg"
+    # Left-to-right
+    # mv "${filebase}_p${ev}-0.jpg" "${filebase}_p${ev}.jpg"
+    # mv "${filebase}_p${ev}-1.jpg" "${filebase}_p${od}.jpg"
+    # Right-to-left
+    mv lr/"${filebase}${ev}-0.jpg" lr/"${filebase}${od}.jpg"
+    mv lr/"${filebase}${ev}-1.jpg" lr/"${filebase}${ev}.jpg"
+done
