@@ -1,0 +1,10 @@
+#!/bin/bash
+
+R=0
+for a in *.mp3 *.ogg *.flac
+do
+  T="$(ffprobe -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "$a" 2>/dev/null)"
+  echo $T
+  [[ "$T" != "" ]] && R="$R + $T"
+done
+echo $R | bc
