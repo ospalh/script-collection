@@ -1,0 +1,1 @@
+find base_dir -mindepth 2 -maxdepth 2 -type d '!' -exec sh -c 'ls -1 "{}"|egrep -i -q "^cover\.(jpg|png)$"' ';' -print
