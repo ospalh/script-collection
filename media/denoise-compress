@@ -4,5 +4,7 @@ for mpf in *mp3
 do
     mpfb=$(basename "$mpf" .mp3)
     mpfn="${mpfb}".prof
-    nice sox "${mpf}" "${mpfb}".ogg noisered "$mpfn" 0.21
+    # nice sox "${mpf}" "${mpfb}".ogg noisered "$mpfn" 0.21 remix - compand 0.3,1 6:-70,-60,-20 -5 -90 0.2
+    # The top parameters ar from the sox manual for music in cars. Applying it to an audiobook sounds terrible.
+    nice sox "${mpf}" "${mpfb}".ogg noisered "$mpfn" 0.21 remix - norm -3 compand 0.3,5 6:-70,-60,-20 -3 -6 0.3
 done

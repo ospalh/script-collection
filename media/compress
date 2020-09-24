@@ -3,6 +3,6 @@
 for mpf in *mp3
 do
     mpfb=$(basename "$mpf" .mp3)
-    nice sox -V3  "${mpf}" -C 2 "${mpfb}".ogg remix - compand 0.3,1 6:-70,-60,-20 -5 -90 0.2
+    nice sox -V3  "${mpf}" -C 2 "${mpfb}".ogg remix - norm -3 compand 0.3,5 6:-70,-60,-20 -3 -6 0.3
 
 done
