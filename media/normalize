@@ -1,0 +1,8 @@
+#!/bin/bash
+
+for mpf in *mp3
+do
+    mpfb=$(basename "$mpf" .mp3)
+    mpfn="${mpfb}".prof
+    nice sox "${mpf}" "${mpfb}".ogg  remix - norm
+done

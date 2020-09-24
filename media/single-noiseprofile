@@ -1,0 +1,8 @@
+#!/bin/bash
+
+mpf=${2}
+mpfb=$(basename "$mpf" .mp3)
+nice sox "${mpf}" "${mpfb}"_sec.wav trim 0.05 ${1}
+echo File "${mpfb}"_sec.wav
+play "${mpfb}"_sec.wav
+nice sox "${mpfb}"_sec.wav -n noiseprof "${mpfb}".prof
