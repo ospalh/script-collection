@@ -1,0 +1,18 @@
+!#/bin/bash
+
+
+
+nice pdfimages -p -png  "$1" "$2"
+page_count=$(exa "$2"*png| wc -l)
+mkdir bw
+for nr in $(seq -w 2 3 $page_count)
+do
+    # cp -i "$2"*$nr.png bw/
+    mv -i "$2"*$nr.png bw/
+done
+pushd bw
+nice mogrify -negate "$2"*png
+popd
+rm "$2"*png
+mv bw/"$2"*png .
+rmdir bw
