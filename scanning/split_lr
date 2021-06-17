@@ -1,7 +1,8 @@
 #!/bin/bash
 
+#Oh, when this is a manga or othe right-to-left work, do something like `rename _0. _2. *_0.` afterwards. This is a quick hack. *shrug*
 mkdir -p lr
-for fl in *.* :
+for fl in *.*
 do
     pr=$(echo ${fl} | awk  -F "." '{print $1}')
     su=$(echo ${fl} | awk  -F "." '{print $2}')
