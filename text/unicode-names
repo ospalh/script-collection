@@ -1,7 +1,7 @@
-#!//bin/python3
+#!/usr/bin/python3
 # -*- coding: utf-8 ; mode: python -*-
 #
-#  © Copyright 2017 Roland Sieker <ospalh@gmail.com>
+#  © 2017–2022 Roland Sieker <ospalh@gmail.com>
 #
 # License: GNU AGPL, version 3 or later;
 #  http://www.gnu.org/licenses/agpl.html
@@ -10,9 +10,20 @@
 import argparse
 import unicodedata
 
-__version__ = '0.0.1'
+__version__ = '0.2.0'
 
+def uform(character):
+    """Return the U+-form of the code point in question
 
+    Return an "U+" and the hex value of the Unicode code point, four
+    digits for BPM characters or six for others
+    """
+    oc = ord(character)
+    if oc < 0x10000:
+        return f'U+{oc:04x}'
+    return f'U+{oc:06x}'
+        
+    
 def name_em(characters):
     """Name unicode characters
 
@@ -25,9 +36,9 @@ def name_em(characters):
         except ValueError as ve:
             uc_name = "({ve})".format(ve=ve)
         print(
-            "» {c} «: {n} {h}".format(
+            "» {c} «: {n} {u}".format(
                 c=one_char, n=uc_name,
-                h=hex(ord(one_char))))
+                u=uform(one_char)))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
