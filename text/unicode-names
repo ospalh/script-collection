@@ -12,6 +12,28 @@ import unicodedata
 
 __version__ = '0.2.0'
 
+
+def fix_nonbmp_fubar(characters):
+    """Fix an encoding-fubar
+
+    Possibly the cygwin-libc mangles non-BMP characters on the command
+    line. Here we try to unmangle them.
+    """
+    fixt_chars = ''
+    fbl = b''  # fubard character bytes
+    for c in characters:
+        o = ord(c)
+        if 0xdc00 <= o <= 0xdcff:
+            # A bit of fubard character
+            fbl += (o & 0xff).to_bytes(1, 'little')
+            if len(fbl) >= 4:
+                fixt_chars += str(fbl, 'UTF-8')
+                fbl = b''
+        else:
+            fixt_chars += c
+            fbl = b''
+    return fixt_chars
+
 def uform(character):
     """Return the U+-form of the code point in question
 
@@ -22,8 +44,8 @@ def uform(character):
     if oc < 0x10000:
         return f'U+{oc:04x}'
     return f'U+{oc:06x}'
-        
-    
+
+
 def name_em(characters):
     """Name unicode characters
 
@@ -46,4 +68,5 @@ if __name__ == '__main__':
         point of the argument.""")
     parser.add_argument("characters", type=str, help='''Characters to name''')
     args = parser.parse_args()
-    name_em(args.characters)
+    fixt_chars = fix_nonbmp_fubar(args.characters)
+    name_em(fixt_chars)
