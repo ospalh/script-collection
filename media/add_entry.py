@@ -35,7 +35,13 @@ def add_to_files(file_list, new_file):
     
 
 def make_list(raw_list, is_json):
-    pass
+    if raw_list == '-':
+        pass
+    if is_json:
+        the_list = []
+    else:
+        the_list = raw_list.split()
+    return the_list
     
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
@@ -44,4 +50,6 @@ if __name__ == '__main__':
     parser.add_argument("--yamlfile", "-y", type=str, help='''The yaml entry to add to the namespaces''')
     parser.add_argument("--jsonlist", "-j", action='store_true', help='''Whether the entries ar a Json list''')
     args = parser.parse_args()
+    nasp_list = make_list(args.namespacelist, args.jsonlist)
+    print(nasp_list)
     #do_process(args.infile)
