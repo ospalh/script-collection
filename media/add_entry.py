@@ -34,12 +34,14 @@ def add_to_files(file_list, new_file):
     pass
     
 
-def json_from_list(plain_list):
+def make_list(raw_list, is_json):
     pass
     
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description="""Add the entries from the Yaml-file »new« to the files for the namespaces listed in the Json file »namespaces«.""")
-    parser.add_argument("infile", type=str, help='''The file to process''')
+    parser.add_argument("--namespacelist", "-l", type=str, help='''The list of namespaces''')
+    parser.add_argument("--yamlfile", "-y", type=str, help='''The yaml entry to add to the namespaces''')
+    parser.add_argument("--jsonlist", "-j", action='store_true', help='''Whether the entries ar a Json list''')
     args = parser.parse_args()
-    do_process(args.infile)
+    #do_process(args.infile)
