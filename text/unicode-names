@@ -37,13 +37,11 @@ def fix_nonbmp_fubar(characters):
 def uform(character):
     """Return the U+-form of the code point in question
 
-    Return an "U+" and the hex value of the Unicode code point, four
-    digits for BPM characters or six for others
+    Return an "U+" and the hex value of the Unicode code point, at
+    least four digits
     """
     oc = ord(character)
-    if oc < 0x10000:
-        return f'U+{oc:04x}'
-    return f'U+{oc:06x}'
+    return f'U+{oc:04X}'
 
 
 def name_em(characters):
