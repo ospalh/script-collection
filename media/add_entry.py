@@ -10,10 +10,11 @@
 
 
 import argparse
+import json
 import os
 import re
+import sys
 import yaml
-import json
 
 __version__ = '0.0.1'
 
@@ -36,9 +37,12 @@ def add_to_files(file_list, new_file):
 
 def make_list(raw_list, is_json):
     if raw_list == '-':
-        pass
+        stdin_list = sys.stdin.readlines()
+        if len(stdin_list) > 1:
+            return [item.strip() for item in stdin_list]
+        raw_list = stdin_list[0]  # Blow up if empty
     if is_json:
-        the_list = []
+        pass
     else:
         the_list = raw_list.split()
     return the_list
@@ -48,7 +52,7 @@ if __name__ == '__main__':
         description="""Add the entries from the Yaml-file »new« to the files for the namespaces listed in the Json file »namespaces«.""")
     parser.add_argument("--namespacelist", "-l", type=str, help='''The list of namespaces''')
     parser.add_argument("--yamlfile", "-y", type=str, help='''The yaml entry to add to the namespaces''')
-    parser.add_argument("--jsonlist", "-j", action='store_true', help='''Whether the entries ar a Json list''')
+    parser.add_argument("--jsonlist", "-j", action='store_true', help='''Whether the entries ar a Json list, not implemented yet''')
     args = parser.parse_args()
     nasp_list = make_list(args.namespacelist, args.jsonlist)
     print(nasp_list)
