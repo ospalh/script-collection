@@ -1,0 +1,42 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 ; mode: python -*-
+#
+# Opposite of assymetric_quotes. Replace those and other non-ASCII
+# characters with ASCII approximations
+#
+#  © Copyright 2016–2019 Roland Sieker <ospalh@gmail.com>
+#
+# License: GNU AGPL, version 3 or later;
+#  http://www.gnu.org/licenses/agpl.html
+
+
+
+
+import argparse
+import sys
+
+__version__ = '0.0.1'
+
+dvorak_from_keys = "axje.uidchtnmbrl;poygk,q'fswvzAXJE>UIDCHTNMBRL:POYGK,Q'FSWVZ"
+qwertz_alfabet =   "abcdefghijklmnopqrstuvwxyzö,.-ABCDEFGHIJKLMNOPQRSTOVWXYZÖ;:_"
+
+def do_process(to_dvorak):
+    if to_dvorak:
+        p_dict = dict(zip(qwertz_alfabet, dvorak_from_keys))
+    else:
+        p_dict = dict(zip(dvorak_from_keys, qwertz_alfabet))
+    for line in sys.stdin:
+        for c in line:
+            try:
+                print(p_dict[c], end='')
+            except KeyError:
+                print(c, end='')
+        print('')
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(
+        description="""Convert input as if it was typed on the wrong
+keyboard, QWERTZ or Dvorak.""")
+    parser.add_argument('-d', '--to_dvorak', action='store_true', help='''To dvorak''')
+    args = parser.parse_args()
+    do_process(args.to_dvorak)

@@ -1,0 +1,9 @@
+#!/bin/bash
+
+INFILE="$1"
+TMPOUTFILE="${INFILE%.*}"
+# OUTFILE="${TMPOUTFILE##*/}.ogg"
+OUTFILE="${TMPOUTFILE##*/}.mp3"
+# OUTFILE="${TMPOUTFILE##*/}"
+
+nice sox  -V3 "${INFILE}" "${OUTFILE}"

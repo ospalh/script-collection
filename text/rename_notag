@@ -1,0 +1,48 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 ; mode: python -*-
+#
+#  © Copyright 2016 Roland Sieker <ospalh@gmail.com>
+#
+# License: GNU AGPL, version 3 or later;
+#  http://www.gnu.org/licenses/agpl.html
+
+
+
+
+import argparse
+import os
+import re
+import tempfile
+
+__version__ = '0.0.1'
+
+out_path = 'renamed_notag'
+title_re = re.compile(r'Story [tT]itle\s*:\s+(.*)')
+tags_re = re.compile(r'Archive [nN]ame\s*:\s+.*(\(.*\))')
+
+def do_process(filename):
+    dirname, basename = os.path.split(filename)
+    title = None
+    tags = None
+    with open(filename, 'r') as inf:
+        # Do processing here.
+        for line in inf:
+            title_s = title_re.search(line)
+            if title_s:
+                title = title_s.group(1).replace(' ', '_').replace('/', '-')
+                print(f'{title=}')
+                break
+    if title:
+        new_name = '{i}.txt'.format(i=title)
+        print(f'{new_name=}')
+        new_path = os.path.join(out_path, new_name)
+        print(f'{new_path=}')
+        os.rename(filename, new_path)
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(
+        description="""Process content of file INFILE, and overwrite original \
+file with new content when done.""")
+    parser.add_argument("infile", type=str, help='''The file to process''')
+    args = parser.parse_args()
+    do_process(args.infile)
