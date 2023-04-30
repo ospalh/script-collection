@@ -19,21 +19,21 @@ import yaml
 __version__ = '0.0.1'
 
 
+
 def do_process(filename):
-    dirname, basename = os.path.split(filename)
-    temp = tempfile.NamedTemporaryFile(
-        prefix=basename, suffix='~', dir=dirname, delete=False, mode='w')
-    with open(filename, 'r') as inf:
-        # Do processing here.
-        for line in inf.readlines():
-            # or here, if it's by line
-            temp.write(line)
-    temp.close()
-    os.rename(temp.name, filename)
+    # No with or other error handling
+    inf = open(filename, 'r')
+    # Do processing here.
+    the_yaml = yaml.safe_load(inf)
+    # add new entry
+    inf.close()
+    ouf = open(filename, 'w')
+    yaml.dump(the_yaml, ouf, allow_unicode=True, sort_keys=False)
+
 
 def add_to_files(file_list, new_file):
     pass
-    
+
 
 def make_list(raw_list, is_json):
     if raw_list == '-':
@@ -46,7 +46,7 @@ def make_list(raw_list, is_json):
     else:
         the_list = raw_list.split()
     return the_list
-    
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description="""Add the entries from the Yaml-file »new« to the files for the namespaces listed in the Json file »namespaces«.""")
