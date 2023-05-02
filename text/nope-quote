@@ -1,0 +1,46 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 ; mode: python -*-
+#
+#  © Copyright 2016 Roland Sieker <ospalh@gmail.com>
+#
+# License: GNU AGPL, version 3 or later;
+#  http://www.gnu.org/licenses/agpl.html
+
+
+
+
+import argparse
+import ftfy
+import os
+import re
+import tempfile
+
+
+ftfy.uncurl_quotes = False  # We want to *curl* the quotes.
+
+__version__ = '0.0.1'
+
+def do_process(filename, suffix='~'):
+    dirname, basename = os.path.split(filename)
+    temp = tempfile.NamedTemporaryFile(
+        prefix=basename, suffix=suffix, dir=dirname, delete=False, mode='w')
+    with open(filename, 'r') as inf:
+        txt = ftfy.fix_text(inf.read())
+        for line in txt:
+            line = re.sub(r"(\w)'(\w)", r"\1’\2", line)
+            line = re.sub(r'(\s|^)"([^s])', r"\1“\2", line)
+            line = re.sub(r'([^s])"([\.,\!]?)(\s|$)', r"\1”\2\3", line)
+            line = re.sub(r"([\s“]|^)'([\w])", r"\1‘\2", line)
+            line = re.sub(r"([^\s])'([\.,\!”]?)(\s|$)", r"\1’\2\3", line)
+            temp.write(line)
+    temp.close()
+    os.rename(temp.name, filename)
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(
+        description="""Process content of file INFILE, and overwrite original \
+file with new content when done.""")
+    parser.add_argument("infile", type=str, help='''The file to process''')
+    args = parser.parse_args()
+    # We now use ftfy.
+    do_process(args.infile)
