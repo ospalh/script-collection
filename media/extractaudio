@@ -2,13 +2,22 @@
 
 INFILE="$1"
 TMPOUTFILE="${INFILE%.*}"
-# OUTFILE="${TMPOUTFILE##*/}.ogg"
-OUTFILE="${TMPOUTFILE##*/}.mp3"
-# OUTFILE="${TMPOUTFILE##*/}"
 
 
-# nice ffmpeg -i "${INFILE}" -vn -acodec libvorbis "${OUTFILE}"
-# nice ffmpeg -i "${INFILE}" -vn -acodec copy "${OUTFILE}"
-nice ffmpeg -i "${INFILE}" -vn -acodec mp3 "${OUTFILE}"
-#nice ffmpeg -i "${INFILE}" -vn -acodec copy "${TMPOUTFILE}".mp3
-#nice ffmpeg -i "${INFILE}" -vn -acodec copy "${TMPOUTFILE}".aac
+
+if [ -z "$2" ]
+then
+    CODEC_NAME=$(ffprobe -v quiet -print_format json -show_streams  "$INFILE" | jq -r '.streams[] | select(.codec_type=="audio")| .codec_name')
+    echo Doing $CODEC_NAME
+    OUTFILE="${TMPOUTFILE##*/}.$CODEC_NAME"
+    nice ffmpeg -i "${INFILE}" -vn -c:a copy "${OUTFILE}"
+else
+    OUTFILE="${TMPOUTFILE##*/}.$2"
+    CODEC_NAME=$2
+    if ! [ -z "$3" ]
+    then
+        CODEC_NAME=$3
+    fi
+    echo so with codec $2
+    nice ffmpeg -i "${INFILE}" -vn -acodec $CODEC_NAME "${OUTFILE}"
+fi
