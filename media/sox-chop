@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Absolutely ad-hoc. I got a file with one output filename and start end end times. I want this to calculate the duration.
+
+inf=$1
+outf=$2
+start_time_hms=$3
+end_time_hms=$4
+
+start_time_s=$(date -d  $start_time_hms "+(%S+%M*60+%H*3600)" | bc)
+end_time_s=$(date -d  $end_time_hms "+(%S+%M*60+%H*3600)" | bc)
+duration=$(echo $end_time_s - $start_time_s | bc)
+
+sox "$inf" "$outf" trim $start_time_s $duration
