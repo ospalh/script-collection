@@ -7,20 +7,39 @@ fi
 
 filebase=$1
 endnr=$2
+step=2
+evs=-1
+if [ $# -ge 3 ]
+then
+    step=$3
+else
+    step=2
+fi
+if [ $# -ge 4 ]
+then
+    start=$4
+else
+    start=1
+fi
+od_i=1
 
 mkdir -p lr/
 
-for evs in $(seq 0 2 $endnr)
+for num in $(seq 0 $step $endnr)
 do
-    ods=$((evs+1))
-    printf -v ev "%03d" $evs
-    printf -v od "%03d" $ods
-    fli=${filebase}${ev}-${od}.jpg
-    convert -crop  2x1@ +repage ${filebase}${ev}-${od}.jpg lr/"${filebase}${ev}.jpg"
+    ev_i=$((od_i+1))
+    printf -v od_s "%03d" $od_i
+    printf -v ev_s "%03d" $ev_i
+    printf -v nr_s "%03d" $num
+    echo $od_s $ev_s $nr_s
+    fli=${filebase}${ev_s}-${od_s}.jpg
+    # convert -crop  2x1@ +repage "${filebase}${ev_s}-${od_s}.jpg" lr_s/"${filebase}${ev_s}.jpg"
+    convert -crop  2x1@ +repage "${filebase}${nr_s}.jpg" lr/"${filebase}${ev_s}.jpg"
     # Left-to-right
-    # mv "${filebase}_p${ev}-0.jpg" "${filebase}_p${ev}.jpg"
-    # mv "${filebase}_p${ev}-1.jpg" "${filebase}_p${od}.jpg"
+    # mv lr/"${filebase}${ev_s}-1.jpg" lr/"${filebase}${ev_s}.jpg"
+    # mv lr/"${filebase}${ev_s}-0.jpg" lr/"${filebase}${od_s}.jpg"
     # Right-to-left
-    mv lr/"${filebase}${ev}-0.jpg" lr/"${filebase}${od}.jpg"
-    mv lr/"${filebase}${ev}-1.jpg" lr/"${filebase}${ev}.jpg"
+    mv lr/"${filebase}${ev_s}-0.jpg" lr/"${filebase}${ev_s}.jpg"
+    mv lr/"${filebase}${ev_s}-1.jpg" lr/"${filebase}${od_s}.jpg"
+    od_i=$((od_i+2))
 done
